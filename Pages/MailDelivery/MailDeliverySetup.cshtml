@@ -1,0 +1,75 @@
+﻿@page
+@model Cipa.Pages.GetAllCountriesModel
+@{
+    ViewData["Title"] = "Mail setup Page";
+}
+<div class="text-center">
+    <h2> Pick a Country </h2>
+    <hr />
+
+    <form id="CountryView" method="post">
+        <table>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <select asp-for="BatchId" asp-items="@(new SelectList(Model.MailBatches, "BatchId", "BatchName"))">
+                            <option value="" selected disabled> --Select a Batch--</option>
+                        </select>
+                        <br />
+
+                        <span asp-validation-for="BatchId" class="text-danger"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <select asp-for="CountryId" asp-items="@(new SelectList(Model.Countries, "CountryId", "CountryName"))">
+                            <option value="" selected disabled> --Select a Country--</option>
+                        </select>
+                        <br />
+
+                        <span asp-validation-for="CountryId" class="text-danger"></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="submit" value="Generate script" class="btn btn-primary">
+                    </div>
+                </td>
+            </tr>
+        </table>  
+    </form>
+    <hr />
+    <h2>Pick a City</h2>
+    <hr />
+    <form id="CityView" method="post">
+        <table>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <select asp-for="BatchId" asp-items="@(new SelectList(Model.MailBatches, "BatchId", "BatchName"))">
+                            <option value="" selected disabled> --Select a Batch--</option>
+                        </select>
+                        <br />
+
+                        <span asp-validation-for="BatchId" class="text-danger"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <select asp-for="CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName"))">
+                            <option value="" selected disabled> --Select a City--</option>
+                        </select>
+                        <br />
+
+                        <span asp-validation-for="CityId" class="text-danger"></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="submit" value="Generate script" class="btn btn-primary">
+                    </div>
+                </td>
+            </tr>
+        </table>        
+    </form>
+</div>
