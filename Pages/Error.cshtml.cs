@@ -13,6 +13,7 @@ namespace Cipa.Pages
     public class ErrorModel : PageModel
     {
         public string RequestId { get; set; }
+        public string Message { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -23,9 +24,10 @@ namespace Cipa.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public void OnGet(string message)
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            Message = message;
         }
     }
 }

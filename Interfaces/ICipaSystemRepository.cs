@@ -8,6 +8,6 @@ namespace Cipa.Interfaces
 {
     public interface ICipaSystemRepository
     {
-        ExecuteResult GetActiveSession();
+        ExecuteResult GetActiveSessionId();
     }
 }
