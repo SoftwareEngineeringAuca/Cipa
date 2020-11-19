@@ -24,6 +24,7 @@ namespace Cipa
         {
             services.AddRazorPages();
             services.AddTransient<ICountryRepository, CountryRepository>();
+            services.AddTransient<IDuplicationRepository, DuplicationRepository>();
             services.AddTransient<IExamsRepository, ExamsRepository>();
             services.AddTransient<IMessageDeliveryRepository, MessageDeliveryRepository>(); 
         }
