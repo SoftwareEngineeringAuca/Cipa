@@ -1,0 +1,30 @@
+﻿@page
+@model Cipa.Pages.WorkCode.WorkCodeGeneratorModel
+@{
+}
+
+<h3>Создание кодов работ, после проведенния экзаменов по стране</h3>
+<hr/>
+<div class="text-center align-content-end">
+    <form id="WorkCode" method="post">
+        <table>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <select asp-for="CountryId" asp-items="@(new SelectList(Model.Countries, "CountryId", "CountryName"))">
+                            <option value="" selected disabled> --Select a Country--</option>
+                        </select>
+                        <br />
+
+                        <span asp-validation-for="CountryId" class="text-danger"></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="submit" value="Generate work codes" class="btn btn-primary">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -27,6 +27,8 @@ namespace Cipa
             services.AddTransient<IDuplicationRepository, DuplicationRepository>();
             services.AddTransient<IExamsRepository, ExamsRepository>();
             services.AddTransient<IMessageDeliveryRepository, MessageDeliveryRepository>(); 
+            services.AddTransient<IWorkCodeRepository, WorkCodeRepository>(); 
+            services.AddTransient<ICipaSystemRepository, CipaSystemRepository>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

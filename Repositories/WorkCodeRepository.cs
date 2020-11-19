@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Cipa.Helpers;
+using Cipa.Interfaces;
+using Study.Common.Results;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Cipa.BusinessModels;
-using Cipa.Helpers;
-using Cipa.Interfaces;
-using Microsoft.Extensions.Primitives;
-using Study.Common.Results;
 
 namespace Cipa.Repositories
 {
+    public struct ParsedCode
+    {
+        public int StartNumber { get; set; }
+        public int StopNumber { get; set; }
+        public char Letter { get; set; }
+    }
+
     public class WorkCodeRepository: Base, IWorkCodeRepository
     {
         public ICipaSystemRepository _cipaSystemRepository;
@@ -21,12 +23,7 @@ namespace Cipa.Repositories
         {
             _cipaSystemRepository = cipaSystemRepository;
         }
-        public class ParsedCode
-        {
-            public int StartNumber { get; set; }
-            public int StopNumber { get; set; }
-            public char Letter { get; set; }
-        }
+        
         public ExecuteResult ExecuteWorkCodeQuery(int countryId)
         {
             var lastWorkCode = GetLastWorkCode(); //
@@ -183,6 +180,12 @@ namespace Cipa.Repositories
 	                    AND e.Exam_ID in (SELECT Exam_ID FROM Exams)";
         }
 
+        /// <summary>
+        /// get the last work_code in db
+        /// since we generate code for next partition range
+        /// as previous work_code + 1000000 
+        /// </summary>
+        /// <returns></returns>
         private string GetLastWorkCode()
         {
             var script = @"select top 1 Work_Code from RegForms_Items rfi
