@@ -1,0 +1,17 @@
+﻿@page
+@model Cipa.Pages.Duplication.DuplicationMergeModel
+@{
+}
+
+<div class="text-center">
+    <form id="Duplication" method="post">
+        <div>
+            <input type="text" asp-for="UserCode" value="Users code" class="text-primary"/>
+            
+            <span asp-validation-for="UserCode" class="text-danger"></span>
+            
+            <input type="submit" value="Generate script" class="btn btn-primary">
+
+        </div>
+    </form>
+</div>

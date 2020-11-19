@@ -39,9 +39,9 @@ namespace Cipa.Pages.MailDelivery
 
         public void OnGet()
         {
-            Countries = _countryRepository.GetCountries().ToList();
+            Countries = _countryRepository.GetCountries();
 
-            Cities = _countryRepository.GetCities().ToList();
+            Cities = _countryRepository.GetCities();
 
             MailBatches = _messageDeliveryRepository.GetMailBatches();
 
