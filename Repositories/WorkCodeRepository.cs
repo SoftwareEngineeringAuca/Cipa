@@ -55,7 +55,96 @@ namespace Cipa.Repositories
 
         private string GetQuery(in int countryId, in int sessionId, int startNumber)
         {
-            return "";
+            return @$"DECLARE
+	                    @Country_ID INT = {countryId},  -- тут указать id страны
+	                    @Session_ID INT = {sessionId}  -- указать id сессии
+
+	                    -- цифры ниже нужно увеличивать каждый раз когда генерировать коды на 1 т.е. 5760000 = 5770000
+	                    -- эти использовались в последний раз (576-577)
+                    DECLARE @First_Letter CHAR(1) = 'A'
+                    DECLARE @Start_Number INT = 5760000
+                    DECLARE @Stop_Number INT = 5770000
+
+                    UPDATE rfi
+                    SET
+	                    Work_Code = @First_Letter
+                    FROM RegForms_Items AS rfi
+                    INNER JOIN RegForms_Headers AS rfh
+	                    ON rfh.Header_ID = rfi.Header_ID
+                    INNER JOIN Exams_Schedule AS sch
+	                    ON rfi.Schedule_ID = sch.Schedule_ID
+                    INNER JOIN Cities AS c
+	                    ON rfh.City_ID = c.City_ID
+                    WHERE 
+	                    c.Country_ID = ISNULL(@Country_ID, c.Country_ID)
+	                    AND sch.Session_ID = @Session_ID
+	                    --AND rfi.IsAttended = 1
+	                    --AND Work_Code IS NOT NULL
+	                    AND Exam_ID in (SELECT Exam_ID FROM Exams)	
+
+                    DECLARE @res INT = 1
+
+                    WHILE @res <> 0
+                    BEGIN
+
+	                    UPDATE rfi
+	                    SET
+		                    Work_Code = @First_Letter + RIGHT(CAST(100000000 + @Start_Number + ABS(CAST(NEWID() AS BINARY(6)) % (@Stop_Number - @Start_Number)) + 1 AS VARCHAR(100)), 7)
+	                    FROM RegForms_Items AS rfi
+	                    INNER JOIN RegForms_Headers AS rfh
+		                    ON rfh.Header_ID = rfi.Header_ID
+	                    INNER JOIN Exams_Schedule AS sch
+		                    ON rfi.Schedule_ID = sch.Schedule_ID
+	                    INNER JOIN Cities AS c
+		                    ON rfh.City_ID = c.City_ID
+	                    WHERE 
+		                    c.Country_ID = ISNULL(@Country_ID, c.Country_ID)
+		                    AND sch.Session_ID = @Session_ID
+		                    --AND rfi.IsAttended = 1
+		                    --AND Work_Code IS NULL
+		                    AND Exam_ID in (SELECT Exam_ID FROM Exams)		
+	                    
+	                    IF NOT EXISTS (
+		                    SELECT Work_Code
+		                    FROM RegForms_Items AS rfi
+		                    INNER JOIN RegForms_Headers AS rfh
+			                    ON rfh.Header_ID = rfi.Header_ID
+		                    INNER JOIN Exams_Schedule AS sch
+			                    ON rfi.Schedule_ID = sch.Schedule_ID
+		                    INNER JOIN Cities AS c
+			                    ON rfh.City_ID = c.City_ID
+		                    WHERE 
+			                    c.Country_ID = ISNULL(@Country_ID, c.Country_ID)
+			                    AND sch.Session_ID = @Session_ID
+		                    GROUP BY 
+			                    Work_Code
+		                    HAVING 
+			                    COUNT(*) > 1
+	                    )
+		                    SELECT @res = 0
+                    END
+
+                    SELECT
+	                    p.Full_Name, rfi.Work_Code, e.Exam_Name, es.Session_Name, c.City_Name
+                    FROM RegForms_Items AS rfi
+                    INNER JOIN RegForms_Headers AS rfh
+	                    ON rfh.Header_ID = rfi.Header_ID
+                    INNER JOIN Exams_Schedule AS sch
+	                    ON rfi.Schedule_ID = sch.Schedule_ID
+                    INNER JOIN Cities AS c
+	                    ON rfh.City_ID = c.City_ID
+                    JOIN People p
+	                    ON p.Person_ID=rfh.Person_ID
+                    JOIN Exams_Sessions es
+	                    ON es.Session_ID=sch.Session_ID
+                    JOIN Exams e
+	                    ON e.Exam_ID=sch.Exam_ID
+                    WHERE 
+	                    c.Country_ID = ISNULL(@Country_ID, c.Country_ID)
+	                    AND sch.Session_ID = @Session_ID
+	                    --AND rfi.IsAttended = 1
+	                    --AND Work_Code IS NOT NULL
+	                    AND e.Exam_ID in (SELECT Exam_ID FROM Exams)";
         }
 
         private string GetLastWorkCode(int sessionId)
