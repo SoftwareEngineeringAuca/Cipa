@@ -9,5 +9,7 @@ namespace Cipa.Interfaces
     public interface ICipaSystemRepository
     {
         ExecuteResult GetActiveSessionId();
+
+        ExecuteResult GenerateNewSession();
     }
 }
