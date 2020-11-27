@@ -1,3 +1,4 @@
+using Cipa.BusinessModels;
 using Cipa.Helpers;
 using Cipa.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,28 @@ namespace Cipa.Pages.Duplication
 
         [BindProperty]
         public string UserCode { get; set; }
-        
+        public string Message { get; set; }
+        public void OnGet()
+        {
+        }
         public IActionResult OnPost()
         {
+            if (UserCode.Length > 10)
+            {
+                Message = "Введенные данные неправильные";
+                return Page();
+            }
             var result = _duplicationRepository.ExecuteWorkCodeQuery(UserCode);
 
-            if (!result.IsSuccess) return RedirectToPage("/Error");
-            var rowsAffected = result.Cast<ModelResult<int>>().Model;
-            _logger.LogInformation($"DuplicationMergeModel: userCode = {UserCode}, totalRowsAffected = {rowsAffected}");
-
-            return RedirectToPage("/Index");
+            if (!result.IsSuccess)
+            {
+                Message = "Произошла ошибка: " + result.Message;
+                return Page();
+            }
+            var response = result.Cast<ModelResult<DuplicationMergeResponseModel>>().Model;
+            _logger.LogInformation($"DuplicationMergeModel: userCode = {UserCode}, Name = {response.FullName}, MainCode = {response.MainCode}");
+            Message = $"Запрос выполнился правильно, объединили {response.FullName}, старый ИН {response.NotMainCode} оставили ИН {response.MainCode}.";
+            return Page();
         }
     }
 }

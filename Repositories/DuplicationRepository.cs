@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Cipa.BusinessModels;
 using Cipa.Helpers;
 using Cipa.Interfaces;
 using Study.Common.Results;
@@ -13,42 +15,49 @@ namespace Cipa.Repositories
     {
         public ExecuteResult ExecuteWorkCodeQuery(string userCode)
         {
-            var script = GetScript(userCode);
-            var totalRowsAffected = 0;
-            using var con = new SqlConnection(ConnectionString);
-            using var command = con.CreateCommand();
-            command.CommandText = script;
-            try
+            var script = GetScript();
+            var responseData = new DuplicationMergeResponseModel();
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                con.Open();
-                totalRowsAffected = command.ExecuteNonQuery();
-            }
-            catch (SqlException e)
-            {
-                con.Close();
-                return new ExecuteResult
+                var command = new SqlCommand(script, connection);
+                command.Parameters.AddWithValue("@UserCode", userCode);
+                try
                 {
-                    Message = e.Message,
-                    State = ExecuteState.Error
-                };
-            }
-            finally
-            {
-                con.Close();
-                con.Dispose();
+                    connection.Open();
+                    command.CommandTimeout = 0;
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        responseData.MainCode = reader.GetFieldValue<string>("MainCode");
+                        responseData.NotMainCode = reader.GetFieldValue<string>("NotMainCode");
+                        responseData.FullName = reader.GetFieldValue<string>("FullName");
+                    }
+                }
+                catch (Exception e)
+                {
+                    return new ExecuteResult
+                    {
+                        Message = e.Message,
+                        State = ExecuteState.Error
+                    };
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
 
-            return new ModelResult<int>
+            return new ModelResult<DuplicationMergeResponseModel>
             {
                 State = ExecuteState.Success,
-                Model = totalRowsAffected
+                Model = responseData
             };
         }
 
-        private string GetScript(string userCode)
+        private string GetScript()
         {
             return @$"
-                    declare @mainCode nvarchar(10) = '{userCode}', 
+                    declare @mainCode nvarchar(10) = @UserCode, 
 		                    @notMainCode nvarchar(10),
 		                    @fullName nvarchar(max),
 		                    @mainId int,
@@ -65,7 +74,7 @@ namespace Cipa.Repositories
                     select @notMainId = Person_ID from People
                     where Person_Code = @notMainCode
 
-                    select @mainCode, @notMainCode, @fullName, @mainId, @notMainId
+                    select @mainCode as MainCode, @notMainCode as NotMainCode, @fullName as FullName, @mainId as MainId, @notMainId as NotMainId
 
                     update RegForms_Headers
                     set Person_ID = @mainId

@@ -9,5 +9,6 @@ namespace Cipa.BusinessModels
     {
         public int ExamId { get; set; }
         public string ExamName { get; set; }
+        public DateTime? ExamDate { get; set; }
     }
 }

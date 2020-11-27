@@ -3,28 +3,31 @@
 @{
 }
 
-<h3>Создание кодов работ, после проведенния экзаменов по стране</h3>
+<div style="text-align: center">
+    <h3>Создание кодов работ, после проведенния экзаменов по стране</h3>
+</div>
 <hr/>
 <div class="text-center align-content-end">
-    <form id="WorkCode" method="post">
-        <table>
-            <tr>
-                <td>
-                    <div class="form-group">
-                        <select asp-for="CountryId" asp-items="@(new SelectList(Model.Countries, "CountryId", "CountryName"))">
-                            <option value="" selected disabled> --Select a Country--</option>
-                        </select>
-                        <br />
-
-                        <span asp-validation-for="CountryId" class="text-danger"></span>
-                    </div>
-                </td>
-                <td>
-                    <div>
-                        <input type="submit" value="Generate work codes" class="btn btn-primary">
-                    </div>
-                </td>
-            </tr>
-        </table>
+    <form id="WorkCode" method="post" style="display: inline-flex;">
+        <div style=" padding: 20px;">
+            <select asp-for="CountryId" asp-items="@(new SelectList(Model.Countries, "CountryId", "CountryName"))" required>
+                <option value="" selected disabled> --Выберите Старану--</option>
+            </select>
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>
+        <div style=" padding: 15px;">
+            <input type="submit" value="Сгенерировать" class="btn btn-primary">
+        </div>
     </form>
+    <div>
+        <p>@Model.Message</p>
+    </div>
+</div>
+<div>
+    После проведения всех экзаменов по стране нужно сгенерировать Коды работ для участников.<br/>
+    Важно:<br/>
+    <ul>   
+        <li>Убедиться что все данные по экзаменам ввели сотрудники Сипа</li>
+        <li>После правильного генерирования кодов работ оповестить сотрудника который запросил выполнить.</li>
+    </ul>
 </div>

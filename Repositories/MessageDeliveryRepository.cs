@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -64,6 +64,7 @@ namespace Cipa.Repositories
             using var con = new SqlConnection(ConnectionString);
             using var command = con.CreateCommand();
             command.CommandText = sql;
+            command.CommandTimeout = 0;
             try
             {
                 con.Open();
@@ -71,12 +72,15 @@ namespace Cipa.Repositories
             }
             catch (SqlException e)
             {
-                con.Close();
                 return new ExecuteResult
                 {
                     Message = e.Message,
                     State = ExecuteState.Error
                 };
+            }
+            finally
+            {
+                con.Close();
             }
 
             return new ModelResult<int>
