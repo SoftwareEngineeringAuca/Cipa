@@ -1,0 +1,63 @@
+﻿@page
+@model Cipa.Pages.Gradings.GradingModel
+@{
+}
+
+<div>
+    <div>
+        Грейдинги делятся на 2 типа: <br />
+        1) Для всех стран в сесси: <br />
+        - Если название грейдинга <strong>НЕ</strong> содержит название страны, грейдинг нужно генерировать для всех стран в сесси.<br/>
+        2) Для специфичной странны: <br />
+        - Если название грейдинга содержит название страны, грейдинг нужно генерировать для страны в названии грейдинга.<br/>
+        <strong>Важно:</strong><br/>
+        Запустить скрипт ниже только после создания грейдингов на <a>http://timelysoftcipa1.westeurope.cloudapp.azure.com:83/EvalForm</a> <br />
+        и выбрать соответствуюий раздел по названию грейдинга.
+    </div>
+    <hr/>
+    <div class="text-center" style="color: red; border: red 1px;">@Model.Message</div>
+    <div>
+        <div>
+            <h5>Раздел для генерации стрипта по всем странам в сесси и по выбраному грейдингу:</h5>
+        </div>
+        <div style="display: inline;">
+            <form method="post" style="display: inline-flex;">
+                <div style="padding: 20px;">
+                    <div>
+                        <select asp-for="GradingId" asp-items="@(new SelectList(Model.GradingsList, "GradingId", "GradingName"))" required>
+                            <option value="" selected disabled> --Выберите Грейдинг--</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="padding: 15px;">
+                    <input type="submit" value="Сгенерировать" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr/>
+    <div>
+        <div>
+            <h5>Раздел для генерации стрипта по специфичной стране в сесси и по выбраному грейдингу:</h5>
+        </div>
+        <div style="display: inline;">
+            <form method="post" style="display: inline-flex;">
+                <div style="padding: 20px;">
+                    <select asp-for="GradingId" asp-items="@(new SelectList(Model.GradingsList, "GradingId", "GradingName"))" required>
+                        <option value="" selected disabled> --Выберите Грейдинг--</option>
+                    </select>
+                </div>
+                <div style="padding: 20px;">
+                    <select asp-for="SelectedCountryId" asp-items="@(new SelectList(Model.Countries, "CountryId", "CountryName"))" required>
+                        <option value="" selected disabled> --Выберите Страну--</option>
+                    </select>
+                </div>
+
+                <div style="padding: 15px;">
+                    <input type="submit" value="Сгенерировать" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

@@ -31,13 +31,13 @@ namespace Cipa.Pages.MailDelivery
         public int CityId { get; set; }
         [BindProperty]
         public int BatchId { get; set; }
-        public string Message { get; set; } = "Nothing Executed";
-        public IEnumerable<CountryViewModel> Countries { get; set; }
-        public IEnumerable<CityViewModel> Cities { get; set; }
-        public IEnumerable<MailBatchesViewModel> MailBatches { get; set; }
-        public IEnumerable<ExamViewModel> Exams { get; set; }
+        public string Message { get; set; }
+        public IEnumerable<CountryViewModel> Countries { get; set; } = new List<CountryViewModel>();
+        public IEnumerable<CityViewModel> Cities { get; set; } =  new List<CityViewModel>();
+        public IEnumerable<MailBatchesViewModel> MailBatches { get; set; } = new List<MailBatchesViewModel>();
+        public IEnumerable<ExamViewModel> Exams { get; set; } = new List<ExamViewModel>();
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
             Countries = _countryRepository.GetCountries();
 
@@ -46,6 +46,7 @@ namespace Cipa.Pages.MailDelivery
             MailBatches = _messageDeliveryRepository.GetMailBatches();
 
             Exams = _examsRepository.GetCurrentSessionExams();
+            return Page();
         }
 
         public IActionResult OnPost()
@@ -56,12 +57,12 @@ namespace Cipa.Pages.MailDelivery
             {
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"MailDeliverySetup->onPost: IsSuccess = true, rows affected = {affectedRowsAmount}");
-                Message = $"Query Executed, {affectedRowsAmount} rows affected!";
-                //todo render to user the amount of rows affected.
-
-                return RedirectToPage("/Index");
+                Message = $"Запрос выполнился успешно, {affectedRowsAmount} полей добавилось!";
+                return OnGet();
             }
-            return RedirectToPage("/Error");
+
+            Message = "Произошла ошибка: " + state.Message;
+            return Page();
 
         }
         public IActionResult OnPostShowExamResult()
@@ -71,12 +72,11 @@ namespace Cipa.Pages.MailDelivery
             {
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"MailDeliverySetup->OnPostShowExamResult: IsSuccess = true, rows affected = {affectedRowsAmount}");
-                Message = $"Query Executed, {affectedRowsAmount} rows affected!";
-                //todo render to user the amount of rows affected.
-
-                return RedirectToPage("/Index");
+                Message = $"Запрос выполнился успешно, {affectedRowsAmount} полей добавилось!";
+                return OnGet();
             }
-            return RedirectToPage("/Error");
+            Message = "Произошла ошибка: " + state.Message;
+            return Page();
 
         }
     }

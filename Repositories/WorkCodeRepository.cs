@@ -4,7 +4,6 @@ using Study.Common.Results;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Cipa.Repositories
@@ -26,16 +25,26 @@ namespace Cipa.Repositories
         
         public ExecuteResult ExecuteWorkCodeQuery(int countryId)
         {
-            var lastWorkCode = GetLastWorkCode(); //
+            var lastWorkCodeResult = GetLastWorkCode();
+            if (!lastWorkCodeResult.IsSuccess)
+            {
+                return new ExecuteResult
+                {
+                    Message = "Произошла ошибка при получении последнего кода работ: " + lastWorkCodeResult.Message,
+                    State = ExecuteState.Error
+                };
+            }
+
+            var lastWorkCode = lastWorkCodeResult.Cast<ModelResult<string>>().Model;
             //parse work code if [1-3] * 100000 >= max int in db then => char(workCode[0]+1) as acii codes should be next in alphabet and [1-3] is 100000!
             var parsedPrevCode = ParseLastWorkCode(lastWorkCode).Cast<ModelResult<ParsedCode>>().Model;
            
             var sessionId = _cipaSystemRepository.GetActiveSessionId().Cast<ModelResult<int>>().Model;
             var query = GetQuery(countryId, sessionId, parsedPrevCode);
-            var totalRowsAffected = 0;
             using var con = new SqlConnection(ConnectionString);
             using var command = con.CreateCommand();
             command.CommandText = query;
+            var totalRowsAffected = 0;
             try
             {
                 con.Open();
@@ -43,12 +52,16 @@ namespace Cipa.Repositories
             }
             catch (SqlException e)
             {
-                con.Close();
                 return new ExecuteResult
                 {
                     Message = e.Message,
                     State = ExecuteState.Error
                 };
+            }
+            finally
+            {
+
+                con.Close();
             }
 
             return new ModelResult<int>
@@ -186,41 +199,45 @@ namespace Cipa.Repositories
         /// as previous work_code + 1000000 
         /// </summary>
         /// <returns></returns>
-        private string GetLastWorkCode()
+        private ExecuteResult GetLastWorkCode()
         {
             var script = @"select top 1 Work_Code from RegForms_Items rfi
                             join RegForms_Headers rfh on rfi.Header_ID = rfh.Header_ID
 							where Work_Code is not null 
                             order by Form_Date desc, Session_ID desc";
             var workCode = "";
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                using (var da = new SqlDataAdapter(script, connection))
+                var command = new SqlCommand(script, connection);
+                try
                 {
-                    var tblPromotion = new DataTable();
-                    try
+                    connection.Open();
+                    command.CommandTimeout = 0;
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
                     {
-                        connection.Open();
-                        da.Fill(tblPromotion);
-                        if (tblPromotion.Rows.Count != 0)
-                        {
-                            for (var i = 0; i < tblPromotion.Rows.Count; i++)
-                            {
-                                var data = tblPromotion.Rows[i];
-
-                                workCode = data.Field<string>("Work_Code");
-                            }
-                        }
+                        workCode = reader.GetFieldValue<string>("Work_Code");
                     }
-                    catch (Exception e)
+                }
+                catch (Exception e)
+                {
+                    return new ExecuteResult
                     {
-                        Console.WriteLine(e);
-                        throw;
-                    }
+                        Message = e.Message,
+                        State = ExecuteState.Error
+                    };
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
 
-            return workCode;
+            return new ModelResult<string>
+            {
+                State = ExecuteState.Success,
+                Model = workCode
+            };
         }
     }
 }

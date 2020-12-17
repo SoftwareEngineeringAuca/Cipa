@@ -11,6 +11,7 @@ Goal: optimize technical work for data manipulation in areas as:
   - Adding people to exams in session
   - Work code generation after exams are taken
   - Creation of grading template for examination
+  
 Technology
   1) AspNet Core 3.1
   2) ADO Net

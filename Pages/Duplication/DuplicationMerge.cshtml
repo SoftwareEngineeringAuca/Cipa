@@ -5,13 +5,22 @@
 
 <div class="text-center">
     <form id="Duplication" method="post">
-        <div>
-            <input type="text" asp-for="UserCode" value="Users code" class="text-primary"/>
-            
-            <span asp-validation-for="UserCode" class="text-danger"></span>
-            
-            <input type="submit" value="Generate script" class="btn btn-primary">
+        <div style="text-align: center">
+            <label for="UserCode">Основной ИН:</label>
+            <input type="text" asp-for="UserCode" placeholder="ИН который оставить" class="text-primary" required/>
 
+            <span asp-validation-for="UserCode" class="text-danger"></span>
+            <input type="submit" value="Generate script" class="btn btn-primary">
+            <hr/>
+            <strong>@Model.Message</strong>
+            <hr/>
+            <div style="margin-top: 20px; text-align: left">
+                <p>Основной инн который нужно оставить пользователю при объединении аккаунтов. <br/>
+                    <strong style="text-align: left">Baжно:</strong> <br/> 
+                    - Если ФИО пользователя как либо отличается, то данные не объединятся. <br/>
+                    - Объединение произойдет только с одной записью, если объединять больше 2 аккаунтов, запустите генерацию еще раз!
+                </p>
+            </div>
         </div>
     </form>
 </div>

@@ -4,8 +4,121 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>CIPA program optimization.</p>
+<div>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>CIPA program optimization.</p>
+    </div>
+    
+    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <a class="nav-link text-dark circle" asp-area="" asp-page="MailDelivery/MailDeliverySetup"><h5 style="color: #609">Рассылка</h5></a>
+                <div style="padding-left: 20px">
+                    <p>Раздел содержит:</p>
+                    <ul>
+                        <li>
+                            Рассылка для пользователей по странам и городам.
+                        </li>
+                    </ul>
+                    <div style="padding-left: 40px">
+                        Обычная рассылка пользователям системы СИПА.
+                    </div>
+                    <ul>
+                        <li>Запуск рассылки пользователям, для просмотра результата экзамена</li>
+                    </ul>
+                    <div>
+                        <p style="padding-left: 40px">
+                            Запускать только после "Вычисление баллов по экзамену", т.к отправка только для участников определенного экзамена.<br />
+                        </p>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark circle" asp-area="" asp-page="Duplication/DuplicationMerge"><h5 style="color: #609">Объединение пользователей</h5></a>
+                <div style="padding-left: 20px">
+                    <strong>Объединение-Удаление личных данных пользователя</strong><br />
+                    <div style="list-style: circle;">При запросе на объединение-удаление данных пользователя, необходимо:</div>  <br />
+                    <div style="padding-left: 20px">
+                        - Запросить ИН который нужно оставить пользователю после объединения-удаления.<br /><br/>
+                        Возможные проблемы:<br />
+                          1. У пользователя разные буквы в ФИО, ошибки при вводе данных пользователем<br />
+                          2. Ошибка в присланном ИН<br />
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/Sessions/Session"><h5 style="color: #609">Создание сесси</h5></a>
+                <div style="padding-left: 20px">
+                    <p>Раздел содержит:</p>
+                    <ul>
+                        <li>
+                            Создание сесси
+                        </li>
+                    </ul>
+                    <div>
+                        <p>
+                            Сессия создается примерно раз в четверть года.<br />
+                            <strong>Важно - </strong> чтобы создать новую сессию убедитесь что все результаты по предыдущей сесси были сгенерированны и полностью закрыты.<br />
+                            Иначе придется возвращать сессию через скрипт в базе данных.
+                        </p>
+                    </div>
+                    <ul>
+                        <li>Добавление экзаменов в сессию</li>
+                    </ul>
+                    <div>
+                        <p>
+                            Экзамены добавляются после создания сесси.<br />
+                        </p>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/UsersSession/UsersSession"><h5 style="color: #609">Регистрация на экзамены</h5></a>
+                <div style="padding-left: 20px">
+                    Регистрируем людей на экзамены, после создания сесси и добалений экзаменов к ней.<br />
+                    При запросе на добавление людей на экзамены по городам, странам, необходимо:<br />
+                    Уточнить все ли данные внесли для регистрации людей на экзамены, также уточнить делать регистрацию для одного города или для всей страны.<br />
+                    (Часто бывает что просят добавить людей на экзамен (экзамены) которые подали заявку уже после регистрации)
+
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/WorkCode/WorkCodeGenerator"><h5 style="color: #609">Генерация кодов работ</h5></a>
+                <div style="padding-left: 20px">
+                    Генерация кодов к экзаменационным работам участников экзаменов, для конкретной страны.
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/Gradings/Grading"><h5 style="color: #609"> Заполнение грейдингов</h5></a>
+                <div style="padding-left: 20px">
+                    <div>
+                        <strong>Создание и заполнение шаблонов-грейдингов для экзаменов</strong>
+                    </div>
+                    <p>
+                        <strong>Внимание!!!</strong><br />
+                        Все грейдинги для каждого экзамена присылают после проведения экзаменов в формате (excel, word)<br />
+                        Несколько шаблонов создаются и заполняются индивидуально для каждой страны это (Налоги и Право). Остальные шаблоны общие для всех стран!<br />
+                        <strong>Запустить скрипт ниже только после создания грейдингов на <link hidden="http://timelysoftcipa1.westeurope.cloudapp.azure.com:83/EvalForm" /><br /></strong>
+                    </p>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/Scores/Score"><h5 style="color: #609"> Вычисление баллов</h5></a>
+                <div style="padding-left: 20px">
+                    <div><strong>Вычисление баллов по экзамену</strong> </div>
+                    <p>
+                        Вычисление баллов для пользователей производить только после проведения и проверки экзамена сотрудниками СИПЫ!<br/>
+                        Получите:<br/>
+                        - Название экзамена:  для которогу нужно сгенерировать баллы<br />
+                        - ФИО сотрудника(ов): которые проверяли экзамен <br />
+                        - Максимальный балл: обычно он всегда 100 (если вам не сказали какой максимальный балл).<br />
+                        - Проходной балл: всегда говорят какой балл (если не сказали, узнать).<br />
+                        - Зазор (Gap): по дифолту всегда 5. (если точно не сказали какой, можно и не спрашивать).<br />
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
 
 </div>

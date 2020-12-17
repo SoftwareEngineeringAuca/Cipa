@@ -5,12 +5,21 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="EPPlus.Core" Version="1.5.4" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
       <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Update="Pages\MailDelivery\MailDeliverySetup.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Pages\Taxonomy\Taxonomy.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\taxonomy_example.png">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
