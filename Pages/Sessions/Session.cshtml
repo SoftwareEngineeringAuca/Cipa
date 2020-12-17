@@ -38,7 +38,7 @@
                     <form id="SessionView" asp-page-handler="AddSession" method="post">
                         <div>
                             <label>Название сесии: </label>
-                            <input type="text" name="sessionName" id="sessionName"/ required="">
+                            <input type="text" name="sessionName" id="sessionName" required="">
                             <span asp-validation-for="SessionName" class="text-danger"></span>
                         </div>
                         <br/>
@@ -85,17 +85,23 @@
             <h3>Экзамены в текущей сессии</h3>
             <table class="table">
                 <tr><td>Name</td><td>Date</td></tr>
-                @if(Model.ExamsInSessionList.Any())
+                @if (Model.ExamsInSessionList.Any())
                 {
-                    @foreach(ExamViewModel exam in Model.ExamsInSessionList)
+                    @foreach (var exam in Model.ExamsInSessionList)
                     {
                         <tr>
                             <td>@exam.ExamName</td>
                             <td>@exam.ExamDate?.ToString("yyyy/MM/dd")</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" asp-page-handler="DeleteExam" asp-route-id="@exam.ExamId" style="background: '#ff0000'; color: '#ffffff'; border: none; padding: 7px 9px; border-radius: 50%; cursor: pointer; float: right">x</button>
+                                </form>
+                            </td>
                         </tr>
                     }
                 }
-            </table>
+
+                    </table>
         </div>
     </div>
     

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using Cipa.BusinessModels;
 using Cipa.Helpers;
 using Cipa.Interfaces;
@@ -28,9 +25,9 @@ namespace Cipa.Repositories
                     SqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        responseData.MainCode = reader.GetFieldValue<string>("MainCode");
-                        responseData.NotMainCode = reader.GetFieldValue<string>("NotMainCode");
-                        responseData.FullName = reader.GetFieldValue<string>("FullName");
+                        responseData.MainCode = reader.IsDBNull(reader.GetOrdinal("MainCode")) ? reader.GetFieldValue<string>("MainCode") : "NULL";
+                        responseData.NotMainCode = reader.IsDBNull(reader.GetOrdinal("NotMainCode")) ? reader.GetFieldValue<string>("NotMainCode") : "NULL";
+                        responseData.FullName = reader.IsDBNull(reader.GetOrdinal("FullName")) ? reader.GetFieldValue<string>("FullName") : "NULL";
                     }
                 }
                 catch (Exception e)

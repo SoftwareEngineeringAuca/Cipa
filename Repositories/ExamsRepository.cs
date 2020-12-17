@@ -58,7 +58,7 @@ namespace Cipa.Repositories
             //get Active sessionId 
             var session = new CipaSystemRepository();
             var sessionId = session.GetActiveSessionId().Cast<ModelResult<int>>().Model;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
                 var query = @" SELECT e.Exam_ID, e.Exam_Name, es.Exam_Date FROM Exams_Schedule AS es
                                     INNER JOIN Exams AS e ON e.Exam_ID = es.Exam_ID

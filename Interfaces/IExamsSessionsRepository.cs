@@ -10,5 +10,6 @@ namespace Cipa.Interfaces
     {
         ExecuteResult CreateSession(string sessionName, DateTime sessionStart, DateTime sessionEnd);
         ExecuteResult AddExamSchedule(int examId, DateTime examDate);
+        ExecuteResult DeleteExamFromSession(int examId);
     }
 }

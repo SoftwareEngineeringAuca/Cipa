@@ -37,7 +37,7 @@ namespace Cipa.Pages.MailDelivery
         public IEnumerable<MailBatchesViewModel> MailBatches { get; set; } = new List<MailBatchesViewModel>();
         public IEnumerable<ExamViewModel> Exams { get; set; } = new List<ExamViewModel>();
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
             Countries = _countryRepository.GetCountries();
 
@@ -46,6 +46,7 @@ namespace Cipa.Pages.MailDelivery
             MailBatches = _messageDeliveryRepository.GetMailBatches();
 
             Exams = _examsRepository.GetCurrentSessionExams();
+            return Page();
         }
 
         public IActionResult OnPost()
@@ -57,7 +58,7 @@ namespace Cipa.Pages.MailDelivery
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"MailDeliverySetup->onPost: IsSuccess = true, rows affected = {affectedRowsAmount}");
                 Message = $"Запрос выполнился успешно, {affectedRowsAmount} полей добавилось!";
-                return Page();
+                return OnGet();
             }
 
             Message = "Произошла ошибка: " + state.Message;
@@ -72,7 +73,7 @@ namespace Cipa.Pages.MailDelivery
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"MailDeliverySetup->OnPostShowExamResult: IsSuccess = true, rows affected = {affectedRowsAmount}");
                 Message = $"Запрос выполнился успешно, {affectedRowsAmount} полей добавилось!";
-                return Page();
+                return OnGet();
             }
             Message = "Произошла ошибка: " + state.Message;
             return Page();

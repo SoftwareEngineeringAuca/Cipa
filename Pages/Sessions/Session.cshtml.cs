@@ -48,11 +48,12 @@ namespace Cipa.Pages.Sessions
             _examsRepository = examsRepository;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
             ActiveSessionNumber = _cipaSystemRepository.GetActiveSessionId().Cast<ModelResult<int>>().Model;
             ExamsList = _examsRepository.GetExams();
             ExamsInSessionList = _examsRepository.GetCurrentSessionExams();
+            return Page();
         }
 
         public IActionResult OnPost()
@@ -64,7 +65,7 @@ namespace Cipa.Pages.Sessions
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"SessionModel->onPost: GenerateNewSession, rows affected = {affectedRowsAmount}");
                 ActiveSessionNumber = _cipaSystemRepository.GetActiveSessionId().Cast<ModelResult<int>>().Model;
-                return RedirectToPage("/Sessions/Session");
+                return OnGet();
             }
 
             Message = "Query Executed with Error: " + state.Message;
@@ -80,8 +81,10 @@ namespace Cipa.Pages.Sessions
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"SessionModel->onPost: GenerateNewSession, rows affected = {affectedRowsAmount}");
                 Message = $"Query Executed, {affectedRowsAmount} rows affected!";
-                return RedirectToPage("/Sessions/Session");
+                return OnGet();
             }
+
+            _logger.LogInformation($"SessionModel->OnPostRevert: RevertSession Error: " + state.Message);
             Message = "Query Executed with Error: " + state.Message;
             return Page();
 
@@ -95,8 +98,9 @@ namespace Cipa.Pages.Sessions
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"SessionModel->OnPostAddSession: AddSession, rows affected = {affectedRowsAmount}");
                 Message = $"Query Executed, {affectedRowsAmount} rows affected!";
-                return RedirectToPage("/Sessions/Session");
+                return OnGet();
             }
+            _logger.LogInformation($"SessionModel -> OnPostAddSession: AddSession Error: " + state.Message);
             Message = "Query Executed with Error: " + state.Message;
             return Page();
 
@@ -110,9 +114,26 @@ namespace Cipa.Pages.Sessions
                 var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
                 _logger.LogInformation($"SessionModel->OnPostAddExam: AddExam, rows affected = {affectedRowsAmount}");
                 Message = $"Query Executed, {affectedRowsAmount} rows affected!";
-                return RedirectToPage("/Sessions/Session");
+                return OnGet();
             }
+            _logger.LogInformation($"SessionModel -> OnPostAddExam: AddExam Error:" + state.Message);
             Message = "Query Executed with Error: " + state.Message;
+            return Page();
+
+        }
+        public IActionResult OnPostDeleteExam(int id)
+        {
+            _logger.LogInformation($"SessionModel -> OnPostDeleteExam: DeleteExam");
+            var state = _examsSessionsRepository.DeleteExamFromSession(id);
+            if (state.IsSuccess)
+            {
+                var affectedRowsAmount = state.Cast<ModelResult<int>>().Model;
+                _logger.LogInformation($"SessionModel->OnPostDeleteExam: DeleteExam, rows affected = {affectedRowsAmount}");
+                Message = $"Запрос выполнился успешно, {affectedRowsAmount} полей изменено!";
+                return OnGet();
+            }
+            _logger.LogInformation($"SessionModel -> OnPostDeleteExam: DeleteExam Error: " + state.Message);
+            Message = "Запрос выполнился c ошибкой: " + state.Message;
             return Page();
 
         }

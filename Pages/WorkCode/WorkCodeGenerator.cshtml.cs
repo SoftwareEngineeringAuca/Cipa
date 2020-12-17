@@ -31,26 +31,28 @@ namespace Cipa.Pages.WorkCode
         public string Message { get; set; }
 
         public IEnumerable<CountryViewModel> Countries { get; set; } = new List<CountryViewModel>();
-        public void OnGet()
+        public IActionResult OnGet()
         {
             //load countries
             Countries = _countryRepository.GetCountries();
-            //load result of generated script for country. maybe make a button to show the result of work code execution affection.
-            //create a structure of models for view the result of query.
+            return Page();
         }
 
         public IActionResult OnPost()
         {
+            _logger.LogInformation("WorkCodeGeneratorModel -> OnPost");
             //generate work_code for country.
             var response = _workCodeRepository.ExecuteWorkCodeQuery(CountryId);
             if (response.IsSuccess)
             {
                 var totalRowsAffected = response.Cast<ModelResult<int>>().Model;
+                _logger.LogInformation($"WorkCodeGeneratorModel -> OnPost; Success: {totalRowsAffected}");
                 Message = $"Запрос выполнился успешно, количество сгенерированных строк: {totalRowsAffected}";
+                return OnGet();
             }
-
+            _logger.LogInformation("WorkCodeGeneratorModel -> OnPost; Error: " + response.Message);
             Message = $"Произошла ошибка: {response.Message}";
-            return Page();
+            return OnGet();
         }
     }
 }

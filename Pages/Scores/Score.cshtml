@@ -1,0 +1,74 @@
+﻿@page
+@model Cipa.Pages.Scores.ScoreModel
+@{
+}
+<h2>Генерация баллов экзаменов</h2>
+<div>
+    <div>
+        <p>
+            Важно: <br/>
+            Получить Имена проверяющих экзамены. Eсли их много, по очереди сгенерировать для каждого проверяющего по экзамену!<br/>
+            Максимальный балл по умолчанию = 100.<br/>
+            Проходной балл по умолчанию = 75.<br/>
+            Зазор по умолчанию = 5.<br/>
+            Обычно при запросе на генерацию результатов пишут какой проходной балл для каждого экзамена, Но всегда лучше переспросить если не написали.<br/>
+
+        </p>
+    </div>
+    <div class="text-center">
+        <hr />
+        <div>
+            <form method="post" asp-page-handler="OnPost">
+                <div style="display: inline-flex;">
+                    <div style="padding: 20px;">
+                        <select asp-for="SelectedEvalId" asp-items="@(new SelectList(Model.EvalFormList, "Id", "Name"))" style="width: 200px" required>
+                            <option value="" selected disabled> --Выберите Экзамен--</option>
+                        </select>
+                    </div>
+                    <div style="padding: 20px;">
+                        <select asp-for="SelectedCheckerId" asp-items="@(new SelectList(Model.CheckersList, "Id", "Name"))" required>
+                            <option value="" selected disabled> --Выберите Проверяющего--</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label>Максимальный балл</label>
+                    <div>
+                        <input asp-for="FactMax" value ="100" type="number" required/>
+                    </div>
+                    <label>Проходной балл</label>
+                    <div>
+                        <input asp-for="FactPass" value ="75"  type="number" required/>
+                    </div>
+                    <label>Зазор</label>
+                    <div>
+                        <input asp-for="Gap" value ="5"  type="number" required/>
+                    </div>
+                </div>
+                
+                <div style="padding: 15px;">
+                    <input type="submit" value="Сгенерировать " class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <hr />
+        <h3>Опубликовать результаты для пользователей</h3>
+        <hr />
+        <div style="display: inline;">
+            <form id="CityView" method="post" asp-page-handler="Publish" style="display: inline-flex;">
+                <div style="padding: 20px;">
+                    <select asp-for="SelectedEvalId" asp-items="@(new SelectList(Model.EvalFormList, "Id", "Name"))" style="width: 200px" required>
+                        <option value="" selected disabled> --Выберите Экзамен--</option>
+                    </select>
+                    <br />
+                </div>
+
+                <div style="padding: 15px;">
+                    <input type="submit" value="Опубликовать" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <div style="color: red; border: red 1px;">@Model.Message</div>
+
+    </div>
+</div>

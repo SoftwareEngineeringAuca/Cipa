@@ -1,19 +1,42 @@
 @page
-@model Cipa.Pages.Taxonomy.Taxonomy
+@model Cipa.Pages.Taxonomy.TaxonomyModel
 
 @{
-    Layout = null;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
+<div class="container">
     
+<h3>Таксономия</h3>
+    <hr/>
+    <div>
+        При добавлении таксономии к определенному Экзамену: <br/>
+        1. Нужно создать excel документ, и по образцу ниже заполнить его данными! (обязательно довавьте в первую ячейку "Нумерация" и "Тема", только две колонки!)<br/>
+        3. Сохранить excel документ на своем компьютере, и выбрать документ по кнопке "Выберите файл". <br/>
+        2. Выбрать экзамен для таксономии, ввести Имя таксономии пример: (Содержание экзамена Финансовый учет 1 2020 г.) и нажать кнопку сгенерировать. <br/>
+        <img src="/taxonomy_example.png" alt="taxonomy_example">
+    </div>
+    <hr/>
+    <div class="text-center" style="display: inline;">
+        <form method="post" enctype="multipart/form-data" style="display: inline-flex;">
+            <div style="padding: 20px;">
+                <select asp-for="ExamId" asp-items="@(new SelectList(Model.ExamsList, "ExamId", "ExamName"))" required>
+                    <option value="" selected disabled> --Выберите Экзамен--</option>
+                </select>
+                <span asp-validation-for="ExamId" class="text-danger"></span>
+            </div>
+            <div style="padding: 20px;">
+                <input type="text" placeholder="Название таксономии" name="TaxonomyName" id="TaxonomyName" required>
+                <span asp-validation-for="TaxonomyName" class="text-danger"></span>
+            </div>
+            <div style="padding: 20px;">
+                <input type="file" name="file" data-max-file-size="100K" data-allowed-file-extensions="xlxs xls" required/>
+            </div>
+
+            <div style="padding: 15px;">
+                <button type="submit" value="Upload" class="btn btn-primary">Сгенерировать</button>
+            </div>
+        </form>
+
+    </div >
+    <div style="text-align: center; color: #ff0014">@Model.Message</div>
 </div>
-</body>
-</html>

@@ -105,5 +105,42 @@ namespace Cipa.Repositories
                 Model = totalRowsAffected
             };
         }
+
+        public ExecuteResult DeleteExamFromSession(int examId)
+        {
+
+            //get current session id
+            var sessionId = _cipaSystemRepository.GetActiveSessionId().Cast<ModelResult<int>>().Model;
+            var sql = $" delete from Exams_Schedule where Session_ID = {sessionId} and Exam_Id = {examId} ";
+            var totalRowsAffected = 0;
+            using var con = new SqlConnection(ConnectionString);
+            using var command = con.CreateCommand();
+            command.CommandText = sql;
+            command.CommandTimeout = 0;
+
+            try
+            {
+                con.Open();
+                totalRowsAffected = command.ExecuteNonQuery();
+            }
+            catch (SqlException e)
+            {
+                return new ExecuteResult
+                {
+                    Message = e.Message,
+                    State = ExecuteState.Error
+                };
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            return new ModelResult<int>
+            {
+                State = ExecuteState.Success,
+                Model = totalRowsAffected
+            };
+        }
     }
 }

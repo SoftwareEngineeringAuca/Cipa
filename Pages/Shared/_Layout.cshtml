@@ -9,15 +9,12 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">Сипа</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow" style="justify-content: center;">
+        <div style=" flex-wrap: wrap;">
                 <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="navbar-brand" asp-area="" asp-page="/Index">Сипа</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="MailDelivery/MailDeliverySetup">Рассылка</a>
                     </li>
@@ -30,8 +27,19 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Sessions/Session">Создание сесси</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/UsersSession/UsersSession">Регистрация на экзамены</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/Gradings/Grading">Грейдинги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/Scores/Score">Вычисление баллов</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/Taxonomy/Taxonomy">Таксономия</a>
+                    </li>
                 </ul>
-            </div>
         </div>
     </nav>
 </header>
